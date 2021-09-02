@@ -1,12 +1,14 @@
 import axios from 'axios';
-import { Place, Weather } from '../interfaces';
+import fs from 'fs';
+import { Place } from '../interfaces';
 
 export default class Searches {
 
     historial: string[] = [];
+    pathDB = './db/database.json';
 
     constructor() {
-        
+        this.readDB();
     }
 
     get paramsMapbox() {
@@ -81,5 +83,32 @@ export default class Searches {
             console.log(error);
         }
     };
+
+    saveHistorial (placeName: string) {
+
+        if (!this.historial.includes(placeName)) {
+            this.historial.unshift(placeName);
+            this.saveDB();
+        }
+
+    }
+
+    saveDB() {
+        
+        const payload = {
+            historial: this.historial
+        };
+
+        fs.writeFileSync(this.pathDB, JSON.stringify(payload, null, 2));
+    }
+
+    readDB() {
+
+        if (fs.existsSync(this.pathDB)) {
+            const info = fs.readFileSync(this.pathDB, 'utf-8');
+            const data = JSON.parse(info)
+            this.historial = data.historial;
+        }
+    }
 
 }

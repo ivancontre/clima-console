@@ -30,7 +30,8 @@ const main = async () => {
                 if (id !== '0') { 
 
                     const placeSelected: Place = places.find((place: Place) => place.id === id);
-
+                    
+                    searches.saveHistorial(placeSelected.name);
 
                     // Obtiene info del clima
                     const weather: Weather = await searches.weatherByPlace(placeSelected.lat, placeSelected.lng) as Weather;
@@ -47,11 +48,15 @@ const main = async () => {
                     console.log('Viento:', `${weather?.wind} km/h`.green);
                     
 
-                }
+                }     
 
+                break;
 
-
-                
+            case 2:
+                searches.historial.forEach((placeName, i) => {
+                    const idx = `${ i + 1 }.`.green;
+                    console.log(`${ idx } ${ placeName }`);
+                })
 
                 break;
         };
